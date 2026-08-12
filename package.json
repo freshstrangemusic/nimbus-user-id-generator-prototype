@@ -1,0 +1,21 @@
+{
+  "name": "nimbus-user-id-generator-prototype",
+  "private": true,
+  "version": "0.1.0",
+  "description": "",
+  "homepage": "https://github.com/freshstrangemusic/nimbus-user-id-generator-prototype#readme",
+  "bugs": {
+    "url": "https://github.com/freshstrangemusic/nimbus-user-id-generator-prototype/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/freshstrangemusic/nimbus-user-id-generator-prototype"
+  },
+  "license": "MPL-2.0",
+  "author": "Beth Rennie",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "serve": "python -m http.server -d ./src 8080"
+  }
+}
