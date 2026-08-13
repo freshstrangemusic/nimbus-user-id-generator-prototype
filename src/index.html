@@ -2,7 +2,50 @@
 <html>
 <head>
  <title>nimbus user-id generator prototype</title>
+ <link rel="stylesheet" type="text/css" href="./index.css">
+ <script type="module" src="./index.mjs" defer></script>
 </head>
+
 <body>
+ <h1>nimbus user-id generator prototype</h1>
+ <div id="id-app" style="display: none">
+  <form action="#">
+   <table id="id-slugs-table">
+    <colgroup>
+     <col span="1" class="col-slug"></col>
+     <col span="1" class="col-lookup"></col>
+     <col span="1" class="col-branch"></col>
+     <col span="1" class="col-action"></col>
+    </colgroup>
+    <thead>
+     <tr>
+      <th>Slug</th>
+      <th></th>
+      <th>Branch</th>
+      <th></th>
+    </thead>
+    <tbody>
+    </tbody>
+    <tfoot>
+     <tr>
+      <td colspan="3"></td>
+      <td>
+       <button id="id-add-slug-btn">+</buton>
+      </td>
+     </tr>
+     <tr>
+      <td colspan="4">
+       <button id="id-compute-user-id" disabled>
+        Compute user ID
+       </button>
+      </td>
+     </tr>
+     <tr>
+      <td colspan="4" id="id-display"></td>
+     </tr>
+    </tfoot>
+   </table>
+  </form>
+ </div>
 </body>
 </html>

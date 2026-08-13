@@ -1,0 +1,33 @@
+.col-slug,
+.col-branch {
+  min-width: 15em;
+}
+
+.col-lookup {
+  min-width: 3em;
+}
+
+#id-add-slug-btn,
+.remove-slug-btn,
+.slug-lookup-btn {
+  width: 2em;
+}
+
+#id-slugs-table > tbody > tr > td,
+#id-slugs-table > tfoot > tr > td {
+  padding: 0.25em 0.5em;
+}
+
+.slug-input,
+.branch-select {
+  width: 100%;
+  margin: 0 0.25em;
+}
+
+#id-compute-user-id {
+  width: 100%;
+}
+
+#id-display {
+  margin-top: 1em;
+}
