@@ -10,6 +10,13 @@
  <h1>nimbus user-id generator prototype</h1>
  <div id="id-app" style="display: none">
   <form action="#">
+   <label for="id-environment">Environment:</label>
+
+   <select id="id-environment">
+    <option value="production">Production</option>
+    <option value="staging">Staging</option>
+   </select>
+
    <table id="id-slugs-table">
     <colgroup>
      <col span="1" class="col-slug"></col>

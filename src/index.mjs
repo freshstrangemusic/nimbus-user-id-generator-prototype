@@ -5,14 +5,19 @@
 import { $ } from "https://code.jquery.com/jquery-4.0.0.module.js";
 import { Sampling } from "./samplling.mjs";
 
-const V6_URL = "https://experimenter.services.mozilla.com/api/v6/experiments/";
+let environment = "production";
+
+const V6_URLS = new Map([
+  ["production", "https://experimenter.services.mozilla.com/api/v6/experiments/"],
+  ["staging", "https://stage.experimenter.nonprod.webservices.mozgcp.net/api/v6/experiments/"],
+]);
 
 const metadata = new Map();
 
 async function fetchRecipe(slug) {
   let rsp;
   try {
-    rsp = await fetch(`${V6_URL}${slug}/`);
+    rsp = await fetch(`${V6_URLS.get(environment)}${slug}/`);
   } catch (e) {
     console.log(e);
     alert("Could not fetch: check console log");
@@ -210,6 +215,22 @@ async function computeId() {
 $(() => {
   const $slugsTable = $("#id-slugs-table");
   const $slugRows = $slugsTable.find("tbody");
+
+  $("#id-environment")
+    .val("production")
+    .click(e => {
+      e.preventDefault();
+
+      environment = $(e.target).val();
+
+      for (const row of metadata) {
+        $(row).remove();
+      }
+
+      metadata.clear();
+
+      newSlugRow($slugRows);
+    });
 
   $("#id-add-slug-btn").click(e => {
     e.preventDefault();

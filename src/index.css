@@ -7,6 +7,10 @@
   min-width: 3em;
 }
 
+#id-slugs-table {
+  border-collapse: collapse;
+}
+
 #id-add-slug-btn,
 .remove-slug-btn,
 .slug-lookup-btn {
@@ -18,10 +22,15 @@
   padding: 0.25em 0.5em;
 }
 
+#id-slugs-table > tbody > tr > :first-child,
+#id-slugs-table > tfoot > tr > :first-child {
+  padding-left: 0;
+}
+
 .slug-input,
 .branch-select {
   width: 100%;
-  margin: 0 0.25em;
+  /* margin: 0 0.25em; */
 }
 
 #id-compute-user-id {
@@ -30,4 +39,8 @@
 
 #id-display {
   margin-top: 1em;
+}
+
+#id-environment {
+  margin-bottom: 2em;
 }
