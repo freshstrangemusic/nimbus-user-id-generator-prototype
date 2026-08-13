@@ -80,15 +80,17 @@ function newSlugRow($slugRows) {
   $row.find(".remove-slug-btn").click(e => {
     e.preventDefault();
 
-    metadata.remove($row[0]);
+    metadata.delete($row[0]);
 
     $row.remove();
+
+    updateComputeBtnDisabled();
   });
 
   $row.find(".slug-lookup-btn").click(async e => {
     e.preventDefault();
 
-    metadata.set($row, null);
+    metadata.set($row[0], null);
     updateComputeBtnDisabled();
 
     $branchSelect.find(".branch").remove();
@@ -121,7 +123,7 @@ function newSlugRow($slugRows) {
     $branchSelect.append(branchSelectOptions(recipe.branches));
     $branchSelect[0].disabled = false;
 
-    metadata.set($row, {
+    metadata.set($row[0], {
       slug,
       branchRatios,
       selectedBranch: "",
@@ -132,17 +134,17 @@ function newSlugRow($slugRows) {
   });
 
   $row.find(".branch-select").change((e) => {
-    metadata.get($row).selectedBranch = $(e.target).val();
+    metadata.get($row[0]).selectedBranch = $(e.target).val();
   });
 
-  metadata.set($row, null);
+  metadata.set($row[0], null);
   $slugRows.append($row);
 }
 
 function updateComputeBtnDisabled() {
   $("#id-compute-user-id").prop(
     "disabled",
-    Array.from(metadata.values()).some(value => value === null)
+    metadata.size === 0 || Array.from(metadata.values()).some(value => value === null)
   );
 }
 
