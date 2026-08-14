@@ -3,7 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import { $ } from "https://code.jquery.com/jquery-4.0.0.module.js";
-import { Sampling } from "./samplling.mjs";
+
+import { Sampling } from "./sampling.mjs";
 
 let environment = "production";
 
