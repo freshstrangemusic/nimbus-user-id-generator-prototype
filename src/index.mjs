@@ -190,12 +190,18 @@ async function computeId() {
         bucketConfig.total,
       );
 
+      console.log(wouldEnroll, selectedBranch);
+
       if (wouldEnroll && selectedBranch === "") {
         continue newId;
       }
 
       if (!wouldEnroll && selectedBranch !== "") {
         continue newId;
+      }
+
+      if (!wouldEnroll && selectedBranch === "") {
+        continue;
       }
 
       if (wouldEnroll && selectedBranch === "*") {
