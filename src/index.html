@@ -9,50 +9,88 @@
 <body>
  <h1>nimbus user-id generator prototype</h1>
  <div id="id-app" style="display: none">
+  <div id="id-tabstrip">
+   <div class="tab tab--active" id="id-tab-generate" data-pane="#id-pane-generate">generate</div>
+   <div class="tab" id="id-tab-evaluate" data-pane="#id-pane-evaluate">evaluate</div>
+  </div>
+
   <form action="#">
-   <label for="id-environment">Environment:</label>
+    <label for="id-environment">Environment:</label>
 
-   <select id="id-environment">
-    <option value="production">Production</option>
-    <option value="staging">Staging</option>
-   </select>
-
-   <table id="id-slugs-table">
-    <colgroup>
-     <col span="1" class="col-slug"></col>
-     <col span="1" class="col-lookup"></col>
-     <col span="1" class="col-branch"></col>
-     <col span="1" class="col-action"></col>
-    </colgroup>
-    <thead>
-     <tr>
-      <th>Slug</th>
-      <th></th>
-      <th>Branch</th>
-      <th></th>
-    </thead>
-    <tbody>
-    </tbody>
-    <tfoot>
-     <tr>
-      <td colspan="3"></td>
-      <td>
-       <button id="id-add-slug-btn">+</buton>
-      </td>
-     </tr>
-     <tr>
-      <td colspan="4">
-       <button id="id-compute-user-id" disabled>
-        Compute user ID
-       </button>
-      </td>
-     </tr>
-     <tr>
-      <td colspan="4" id="id-display"></td>
-     </tr>
-    </tfoot>
-   </table>
+    <select id="id-environment">
+     <option value="production">Production</option>
+     <option value="staging">Staging</option>
+    </select>
   </form>
+
+  <div id="id-pane-generate">
+   <form action="#">
+
+    <table id="id-slugs-table">
+     <colgroup>
+      <col span="1" class="col-slug"></col>
+      <col span="1" class="col-lookup"></col>
+      <col span="1" class="col-branch"></col>
+      <col span="1" class="col-action"></col>
+     </colgroup>
+     <thead>
+      <tr>
+       <th>Slug</th>
+       <th></th>
+       <th>Branch</th>
+       <th></th>
+     </thead>
+     <tbody>
+     </tbody>
+     <tfoot>
+      <tr>
+       <td colspan="3"></td>
+       <td>
+        <button id="id-add-slug-btn">+</buton>
+       </td>
+      </tr>
+      <tr>
+       <td colspan="4">
+        <button id="id-compute-user-id" disabled>
+         Compute user ID
+        </button>
+       </td>
+      </tr>
+      <tr>
+       <td colspan="4" id="id-display"></td>
+      </tr>
+     </tfoot>
+    </table>
+   </form>
+  </div>
+
+  <div id="id-pane-evaluate" style="display: none">
+   <form action="#">
+    <table>
+     <tbody>
+      <tr>
+       <th class="col-key">Randomization ID:</th>
+       <td class="col-value"><input type="text" id="id-randomization-id"></td>
+      </tr>
+      <tr>
+       <th class="col-key">Slug:</th>
+       <td class="col-value"><input type="text" id="id-lookup-slug"></textarea></td>
+      </tr>
+      <tr>
+        <td colspan="2">
+         <button id="id-compute-branch">
+          Compute enrolled branch
+         </button>
+       </td>
+      </tr>
+      <tr>
+       <td colspan="4" id="id-computed-branch-display">
+       </td>
+      </tr>
+     </tbody>
+    </table>
+   </form>
+  </div>
  </div>
 </body>
 </html>

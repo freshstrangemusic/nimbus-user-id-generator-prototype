@@ -7,7 +7,6 @@ import { $ } from "https://code.jquery.com/jquery-4.0.0.module.js";
 import { Sampling } from "./sampling.mjs";
 
 let environment = "production";
-
 const V6_URLS = new Map([
   ["production", "https://experimenter.services.mozilla.com/api/v6/experiments/"],
   ["staging", "https://stage.experimenter.nonprod.webservices.mozgcp.net/api/v6/experiments/"],
@@ -51,175 +50,164 @@ async function fetchRecipe(slug) {
   return json;
 }
 
-function branchSelectOptions(branches) {
-  return branches.map(({ slug }) =>
-    $(`<option class="branch"></option>`)
-      .val(slug)
-      .text(slug)
-  );
-}
+function renderGenerateTab() {
+  const metadata = new Map();
 
-function newSlugRow($slugRows) {
-  const $row = $(`
-    <tr>
-      <td>
-        <input type="text" placeholder="slug" class="slug-input">
-      </td>
-      <td>
-        <button class="slug-lookup-btn">🔍</button>
-      </td>
-      <td>
-        <select class="branch-select" disabled>
-          <option value="">(not enrolled)</option>
-          <option value="*">(any branch)</option>
-        </select>
-      </td>
-      <td>
-        <button class="remove-slug-btn">-</button>
-      </td>
-    </tr>
-  `);
+  function branchSelectOptions(branches) {
+    return branches.map(({ slug }) =>
+      $(`<option class="branch"></option>`)
+        .val(slug)
+        .text(slug)
+    );
+  }
 
-  const $slugInput = $row.find(".slug-input");
-  const $branchSelect = $row.find(".branch-select");
+  function newSlugRow($slugRows) {
+    const $row = $(`
+      <tr>
+        <td>
+          <input type="text" placeholder="slug" class="slug-input">
+        </td>
+        <td>
+          <button class="slug-lookup-btn">🔍</button>
+        </td>
+        <td>
+          <select class="branch-select" disabled>
+            <option value="">(not enrolled)</option>
+            <option value="*">(any branch)</option>
+          </select>
+        </td>
+        <td>
+          <button class="remove-slug-btn">-</button>
+        </td>
+      </tr>
+    `);
 
-  $row.find(".remove-slug-btn").click(e => {
-    e.preventDefault();
+    const $slugInput = $row.find(".slug-input");
+    const $branchSelect = $row.find(".branch-select");
 
-    metadata.delete($row[0]);
+    $row.find(".remove-slug-btn").click(e => {
+      e.preventDefault();
 
-    $row.remove();
+      metadata.delete($row[0]);
 
-    updateComputeBtnDisabled();
-  });
+      $row.remove();
 
-  $row.find(".slug-lookup-btn").click(async e => {
-    e.preventDefault();
-
-    metadata.set($row[0], null);
-    updateComputeBtnDisabled();
-
-    $branchSelect.find(".branch").remove();
-    $branchSelect[0].disabled = true;
-
-    const slug = $slugInput.val().trim();
-    if (!slug) {
-      alert("invalid slug");
-      return;
-    }
-
-    const recipe = await fetchRecipe(slug);
-    if (!recipe) {
-      return;
-    }
-
-    for (const entry of metadata.values()) {
-      if (!entry) {
-        continue;
-      }
-
-      if (slug === entry.slug) {
-        alert("duplicate slug");
-        return;
-      }
-    }
-
-    const branchRatios = recipe.branches.map(branch => [branch.slug, branch.ratio]);
-
-    $branchSelect.append(branchSelectOptions(recipe.branches));
-    $branchSelect[0].disabled = false;
-
-    metadata.set($row[0], {
-      slug,
-      branchRatios,
-      selectedBranch: "",
-      bucketConfig: recipe.bucketConfig
+      updateComputeBtnDisabled();
     });
 
-    updateComputeBtnDisabled();
-  });
+    $row.find(".slug-lookup-btn").click(async e => {
+      e.preventDefault();
 
-  $row.find(".branch-select").change((e) => {
-    metadata.get($row[0]).selectedBranch = $(e.target).val();
-  });
+      metadata.set($row[0], null);
+      updateComputeBtnDisabled();
 
-  metadata.set($row[0], null);
-  $slugRows.append($row);
-}
+      $branchSelect.find(".branch").remove();
+      $branchSelect[0].disabled = true;
 
-function updateComputeBtnDisabled() {
-  $("#id-compute-user-id").prop(
-    "disabled",
-    metadata.size === 0 || Array.from(metadata.values()).some(value => value === null)
-  );
-}
+      const slug = $slugInput.val().trim();
+      if (!slug) {
+        alert("invalid slug");
+        return;
+      }
 
-/* Based on the implementation of ExperimentManager.chooseBranch:
- * https://raw.githubusercontent.com/mozilla-firefox/firefox/25d7109bf565c299435dec3dd2b9e79a1ce7c15d/toolkit/components/nimbus/lib/ExperimentManager.sys.mjs
- */
-async function chooseBranch(slug, branchRatios, id) {
-  const ratios = branchRatios.map(([, ratio]) => ratio);
-  const input = `experimentmanager-${id}-${slug}-branch`;
+      const recipe = await fetchRecipe(slug);
+      if (!recipe) {
+        return;
+      }
 
-  const index = await Sampling.ratioSample(input, ratios);
-  return branchRatios[index][0];
-}
+      for (const entry of metadata.values()) {
+        if (!entry) {
+          continue;
+        }
 
-/* Based on the implementation of ExperimentManager.generateTestIds:
- * https://raw.githubusercontent.com/mozilla-firefox/firefox/25d7109bf565c299435dec3dd2b9e79a1ce7c15d/toolkit/components/nimbus/lib/ExperimentManager.sys.mjs
- */
-async function computeId() {
-  for (const { slug, selectedBranch, bucketConfig } of metadata.values()) {
-    if (selectedBranch === "" && bucketConfig.count === bucketConfig.total) {
-      alert(`${slug} will always enroll - pick a branch`);
-      return null;
-    } else if (selectedBranch !== "" && bucketConfig.count === 0) {
-      alert(`${slug} will never enroll`); l
-      return null;
-    }
+        if (slug === entry.slug) {
+          alert("duplicate slug");
+          return;
+        }
+      }
+
+      const branchRatios = recipe.branches.map(branch => [branch.slug, branch.ratio]);
+
+      $branchSelect.append(branchSelectOptions(recipe.branches));
+      $branchSelect[0].disabled = false;
+
+      metadata.set($row[0], {
+        slug,
+        branchRatios,
+        selectedBranch: "",
+        bucketConfig: recipe.bucketConfig
+      });
+
+      updateComputeBtnDisabled();
+    });
+
+    $row.find(".branch-select").change((e) => {
+      metadata.get($row[0]).selectedBranch = $(e.target).val();
+    });
+
+    metadata.set($row[0], null);
+    $slugRows.append($row);
   }
 
-  newId: while (true) {
-    const id = crypto.randomUUID();
+  function updateComputeBtnDisabled() {
+    $("#id-compute-user-id").prop(
+      "disabled",
+      metadata.size === 0 || Array.from(metadata.values()).some(value => value === null)
+    );
+  }
 
-    for (const { slug, branchRatios, selectedBranch, bucketConfig } of metadata.values()) {
-      const wouldEnroll = await Sampling.bucketSample(
-        [id, bucketConfig.namespace],
-        bucketConfig.start,
-        bucketConfig.count,
-        bucketConfig.total,
-      );
-
-      console.log(wouldEnroll, selectedBranch);
-
-      if (wouldEnroll && selectedBranch === "") {
-        continue newId;
-      }
-
-      if (!wouldEnroll && selectedBranch !== "") {
-        continue newId;
-      }
-
-      if (!wouldEnroll && selectedBranch === "") {
-        continue;
-      }
-
-      if (wouldEnroll && selectedBranch === "*") {
-        continue;
-      }
-
-      const enrolledBranch = await chooseBranch(slug, branchRatios, id);
-
-      if (enrolledBranch !== selectedBranch) {
-        continue newId;
+  /* Based on the implementation of ExperimentManager.generateTestIds:
+  * https://raw.githubusercontent.com/mozilla-firefox/firefox/25d7109bf565c299435dec3dd2b9e79a1ce7c15d/toolkit/components/nimbus/lib/ExperimentManager.sys.mjs
+  */
+  async function computeId() {
+    for (const { slug, selectedBranch, bucketConfig } of metadata.values()) {
+      if (selectedBranch === "" && bucketConfig.count === bucketConfig.total) {
+        alert(`${slug} will always enroll - pick a branch`);
+        return null;
+      } else if (selectedBranch !== "" && bucketConfig.count === 0) {
+        alert(`${slug} will never enroll`); l
+        return null;
       }
     }
 
-    return id;
-  }
-}
+    newId: while (true) {
+      const id = crypto.randomUUID();
 
-$(() => {
+      for (const { slug, branchRatios, selectedBranch, bucketConfig } of metadata.values()) {
+        const wouldEnroll = await Sampling.bucketSample(
+          [id, bucketConfig.namespace],
+          bucketConfig.start,
+          bucketConfig.count,
+          bucketConfig.total,
+        );
+
+        if (wouldEnroll && selectedBranch === "") {
+          continue newId;
+        }
+
+        if (!wouldEnroll && selectedBranch !== "") {
+          continue newId;
+        }
+
+        if (!wouldEnroll && selectedBranch === "") {
+          continue;
+        }
+
+        if (wouldEnroll && selectedBranch === "*") {
+          continue;
+        }
+
+        const enrolledBranch = await chooseBranch(slug, branchRatios, id);
+
+        if (enrolledBranch !== selectedBranch) {
+          continue newId;
+        }
+      }
+
+      return id;
+    }
+  }
+
   const $slugsTable = $("#id-slugs-table");
   const $slugRows = $slugsTable.find("tbody");
 
@@ -268,6 +256,87 @@ $(() => {
   });
 
   newSlugRow($slugRows);
+}
+
+function renderEvaluateTab() {
+  const $randomizationIdInput = $("#id-randomization-id");
+  const $slugInput = $("#id-lookup-slug");
+  const $computeBtn = $("#id-compute-branch");
+  const $display = $("#id-computed-branch-display");
+
+  $display.text("");
+
+  $computeBtn.click(async e => {
+    e.preventDefault();
+
+    const slug = $slugInput.val().trim();
+
+    if (!slug.length) {
+      alert("Please enter a slug");
+      return;
+    }
+
+    const randomizationId = $randomizationIdInput.val().trim();
+    if (!randomizationId.length) {
+      alert("Please enter a randomization ID");
+      return;
+    }
+
+    const recipe = await fetchRecipe(slug);
+    if (!recipe) {
+      return;
+    }
+
+    const { bucketConfig } = recipe;
+
+    const wouldEnroll = await Sampling.bucketSample(
+      [randomizationId, bucketConfig.namespace],
+      bucketConfig.start,
+      bucketConfig.count,
+      bucketConfig.total,
+    );
+
+    if (!wouldEnroll) {
+      $display.text("(will not enroll)");
+      return;
+    }
+
+    const branchRatios = recipe.branches.map(branch => [branch.slug, branch.ratio]);
+    const branch = await chooseBranch(slug, branchRatios, randomizationId);
+
+    $display.text(branch);
+  });
+}
+
+/* Based on the implementation of ExperimentManager.chooseBranch:
+ * https://raw.githubusercontent.com/mozilla-firefox/firefox/25d7109bf565c299435dec3dd2b9e79a1ce7c15d/toolkit/components/nimbus/lib/ExperimentManager.sys.mjs
+ */
+async function chooseBranch(slug, branchRatios, id) {
+  const ratios = branchRatios.map(([, ratio]) => ratio);
+  const input = `experimentmanager-${id}-${slug}-branch`;
+
+  const index = await Sampling.ratioSample(input, ratios);
+  return branchRatios[index][0];
+}
+
+$(() => {
+  let activeTab = "#id-pane-generate";
+
+  renderGenerateTab();
+  renderEvaluateTab();
+
+  $(".tab").click(e => {
+    e.preventDefault();
+
+    if (e.target.dataset.pane !== activeTab) {
+      $(".tab--active").removeClass("tab--active");
+      $(activeTab).hide();
+
+      activeTab = e.target.dataset.pane;
+      $(e.target).addClass("tab--active");
+      $(activeTab).show();
+    }
+  });
 
   $("#id-app").show();
 });

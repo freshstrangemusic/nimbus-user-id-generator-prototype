@@ -1,14 +1,42 @@
-.col-slug,
-.col-branch {
-  min-width: 15em;
+#id-tabstrip {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid #000000;
+  margin-bottom: 1em;
 }
 
-.col-lookup {
-  min-width: 3em;
+.tab {
+  font-size: 1.25em;
+  display: inline-block;
+  cursor: pointer;
+  padding: 0.25em;
+  border: 1px solid #000000;
+  border-width: 1px 1px 0 1px;
+  border-color: #000000;
+  border-style: solid;
+
+  &:not(:last-child) {
+    margin-right: 1em;
+  }
+
+  &.tab--active {
+    background: #eeeeee;
+  }
 }
+
+table {
+  border-collapse: collapse;
+}
+
 
 #id-slugs-table {
-  border-collapse: collapse;
+  & .col-slug,
+  & .col-branch {
+    min-width: 15em;
+  }
+  & .col-lookup {
+    min-width: 3em;
+  }
 }
 
 #id-add-slug-btn,
@@ -17,8 +45,8 @@
   width: 2em;
 }
 
-#id-slugs-table > tbody > tr > td,
-#id-slugs-table > tfoot > tr > td {
+tbody > tr > td,
+tfoot > tr > td {
   padding: 0.25em 0.5em;
 }
 
@@ -43,4 +71,34 @@
 
 #id-environment {
   margin-bottom: 2em;
+}
+
+#id-pane-evaluate table {
+  & th.col-key {
+  text-align: left;
+  }
+
+  & td.col-value {
+    min-width: 20em;
+  }
+
+  & input,
+  & textarea {
+    width: 100%;
+  }
+}
+
+
+#id-randomization-id,
+#id-lookup-slug {
+  font-family: monospace;
+  width: 100%;
+}
+
+#id-compute-branch {
+  width: 100%;
+}
+
+#id-computed-branch-display {
+  margin-top: 1em;
 }
